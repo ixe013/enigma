@@ -3,12 +3,39 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"text/template"
 
 	"github.com/emedvedev/enigma"
 	"github.com/mkideal/cli"
 )
+
+
+type commaSeparatedStrings []string
+
+type commaSeparatedInts []int
+
+// Support comma separated arguments (implements cli.Decoder interface)
+func (l *commaSeparatedStrings) Decode(s string) error {
+	*l = strings.Split(s, ",")
+	return nil
+}
+
+// Support comma separated arguments (implements cli.Decoder interface)
+func (d *commaSeparatedInts) Decode(s string) error {
+	strings := strings.Split(s, ",")
+    ints := make([]int, len(strings))
+
+    for i, s := range(strings) {
+        if v, err := strconv.Atoi(s); err == nil {
+            ints[i] = v
+        } else {
+            return err
+        }
+    }
+	return nil
+}
 
 // CLIOpts sets the parameter format for Enigma CLI. It also includes a "help"
 // flag and a "condensed" flag telling the program to output plain result.
@@ -17,10 +44,10 @@ type CLIOpts struct {
 	Help      bool `cli:"!h,help" usage:"Show help."`
 	Condensed bool `cli:"c,condensed" name:"false" usage:"Output the result without additional information."`
 
-	Rotors    []string `cli:"rotors" name:"I II III" usage:"Rotor configuration. Supported: I, II, III, IV, V, VI, VII, VIII, Beta, Gamma."`
-	Rings     []int    `cli:"rings" name:"1 1 1" usage:"Rotor rings offset: from 1 (default) to 26 for each rotor."`
-	Position  []string `cli:"position" name:"A A A" usage:"Starting position of the rotors: from A (default) to Z for each."`
-	Plugboard []string `cli:"plugboard" name:"[]" usage:"Optional plugboard pairs to scramble the message further."`
+	Rotors    commaSeparatedStrings `cli:"rotors" name:"I II III" usage:"Rotor configuration. Supported: I, II, III, IV, V, VI, VII, VIII, Beta, Gamma."`
+	Rings     commaSeparatedInts    `cli:"rings" name:"1 1 1" usage:"Rotor rings offset: from 1 (default) to 26 for each rotor."`
+	Position  commaSeparatedStrings `cli:"position" name:"A A A" usage:"Starting position of the rotors: from A (default) to Z for each."`
+	Plugboard commaSeparatedStrings `cli:"plugboard" name:"[]" usage:"Optional plugboard pairs to scramble the message further."`
 
 	Reflector string `cli:"reflector" name:"C" usage:"Reflector. Supported: A, B, C, B-Thin, C-Thin."`
 }

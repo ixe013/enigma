@@ -30,7 +30,7 @@ Using an Enigma machine with default settings is somewhat similar to
 setting your password to `0000`. Let's up our security game:
 
 ```
-enigma youtu.be/dQw4w9WgXcQ --rotors Beta VI I III --reflector C-Thin --plugboard AD SF ET RY HK JL QZ WX UM OP --rings 10 5 16 10
+enigma youtu.be/dQw4w9WgXcQ --rotors Beta,VI,I,III --reflector C-thin --plugboard AD,SF,ET,RY,HK,JL,QZ,WX,UM,OP --rings 10,5,16,10
 ```
 
 Much better! And of course, `enigma -h` will give you the complete description of
